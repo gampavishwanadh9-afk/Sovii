@@ -1,177 +1,178 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>For My Sunshine 💛</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at bottom, #0f2027, #000000 70%);
-    color: white;
-    text-align: center;
-    overflow: hidden;
+body{
+    margin:0;
+    padding:0;
+    font-family:'Poppins',sans-serif;
+    height:100vh;
+    overflow:hidden;
+    background: linear-gradient(-45deg,#ff758c,#ff7eb3,#ffd3a5,#ff9a9e);
+    background-size:400% 400%;
+    animation:gradient 10s ease infinite;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    text-align:center;
 }
 
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
+@keyframes gradient{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
 
-#unlock {
-    position: absolute;
-    top: 40%;
-    width: 100%;
-    font-size: 28px;
-    cursor: pointer;
-    animation: glow 2s infinite alternate;
+.container{
+    max-width:700px;
+    padding:30px;
+    backdrop-filter: blur(10px);
 }
 
-@keyframes glow {
-    from { text-shadow: 0 0 10px pink; }
-    to { text-shadow: 0 0 30px hotpink; }
+h1{
+    font-family:'Great Vibes',cursive;
+    font-size:60px;
 }
 
-#message {
-    display: none;
-    padding: 30px;
-    margin-top: 10%;
-    font-size: 20px;
-    line-height: 1.8;
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:30px;
+    background:white;
+    color:#ff4d6d;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:20px;
+    transition:0.3s;
 }
 
-#final {
-    display: none;
-    margin-top: 30px;
-    font-size: 22px;
-    cursor: pointer;
-    color: pink;
+button:hover{
+    transform:scale(1.1);
 }
 
-.heart {
-    position: absolute;
-    color: pink;
-    animation: float 6s linear infinite;
+.line{
+    opacity:0;
+    transform:translateY(30px);
+    filter:blur(5px);
+    transition:all 1.2s ease;
+    margin:15px 0;
+    font-size:18px;
 }
 
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
+.show{
+    opacity:1;
+    transform:translateY(0);
+    filter:blur(0);
+}
+
+.hearts{
+    position:absolute;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+.heart{
+    position:absolute;
+    color:white;
+    animation:float 6s linear infinite;
+    font-size:20px;
+}
+
+@keyframes float{
+    0%{transform:translateY(100vh); opacity:1;}
+    100%{transform:translateY(-10vh); opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
+<div class="hearts"></div>
 
-<div id="unlock" onclick="startExperience()">
-✨ Tap to Unlock My Heart ✨
+<div class="container">
+
+<h1>Bangaram 💛</h1>
+
+<button onclick="startMagic()">Tap Here Mahal Ko ✨</button>
+
+<div id="message" style="margin-top:30px;"></div>
+
+<button id="musicBtn" style="display:none;" onclick="playMusic()">Play Our Song 🎵</button>
+
 </div>
 
-<div id="message">
-<div id="typed"></div>
-<div id="final" onclick="finalMessage()">
-💖 Will you always stay with me? 💖
-</div>
-</div>
-
-<audio id="bgmusic" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8a7c2a5a5.mp3?filename=romantic-piano-110623.mp3" type="audio/mpeg">
+<audio id="song">
+<source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// Star Background
-const canvas = document.getElementById("stars");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const text = [
+"Sunshine…",
+"I don’t even know how to explain how much I’ve been missing you lately.",
+"Every small moment reminds me of you, bangaram.",
+"The way you tease me… the way you care… the way you exist in my life.",
+"Mahal ko, distance is honestly the only thing I hate.",
+"Because how can someone be so far and still be my everyday peace?",
+"You are my comfort.",
+"My happiness.",
+"My safe place.",
+"And every single day without you feels incomplete.",
+"I just miss you… more than I can ever properly say."
+];
 
-let stars = [];
-for(let i=0;i<150;i++){
-    stars.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        radius: Math.random()*1.5
-    });
-}
+function startMagic(){
+    document.querySelector("button").style.display="none";
+    const container=document.getElementById("message");
+    let i=0;
 
-function drawStars(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
-    stars.forEach(s=>{
-        ctx.beginPath();
-        ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
-        ctx.fill();
-    });
-}
-setInterval(drawStars,50);
+    function reveal(){
+        if(i<text.length){
+            let line=document.createElement("div");
+            line.className="line";
+            line.innerHTML=text[i];
+            container.appendChild(line);
 
-// Experience Start
-function startExperience(){
-    document.getElementById("unlock").style.display="none";
-    document.getElementById("message").style.display="block";
-    document.getElementById("bgmusic").play();
-    typeText();
-    setInterval(createHeart,400);
-}
+            setTimeout(()=>{
+                line.classList.add("show");
+            },100);
 
-// Typing Effect
-const text = `Bangaram 💛
-
-Mahal ko, my sunshine ☀️
-
-From Mafia42 to forever…
-Who knew a simple game would lead me to the most precious person in my life?
-
-Every single day without you feels a little incomplete.
-No matter what I do, there's always a quiet moment
-where I pause… and miss you more than before.
-
-Distance may separate our hands,
-but it will never separate our hearts.
-
-You are my comfort.
-My peace.
-My happiness after a long day.
-My safe place.
-
-I miss you, bangaram.
-More than words.
-More than distance.
-More than time.
-
-And I will always choose you.`;
-
-let i=0;
-function typeText(){
-    if(i < text.length){
-        document.getElementById("typed").innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeText,30);
-    } else {
-        document.getElementById("final").style.display="block";
+            i++;
+            setTimeout(reveal,1400);
+        } else {
+            document.getElementById("musicBtn").style.display="inline-block";
+        }
     }
+
+    reveal();
 }
 
-// Floating Hearts
-function createHeart(){
+function playMusic(){
+    document.getElementById("song").play();
+}
+
+function createHearts(){
     const heart=document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerHTML="💖";
+    heart.className="heart";
+    heart.innerHTML="❤";
     heart.style.left=Math.random()*100+"vw";
-    heart.style.fontSize=(Math.random()*20+15)+"px";
-    document.body.appendChild(heart);
+    heart.style.fontSize=(Math.random()*20+10)+"px";
+    heart.style.animationDuration=(Math.random()*3+3)+"s";
+    document.querySelector(".hearts").appendChild(heart);
+
     setTimeout(()=>heart.remove(),6000);
 }
 
-// Final Message
-function finalMessage(){
-    document.getElementById("final").innerHTML="Forever and always, mahal ko. 💍💖";
-}
+setInterval(createHearts,500);
 </script>
 
 </body>
